@@ -13,6 +13,7 @@ pub fn compact_disk(mut disk: Vec<Block>) -> Vec<Block> {
         }
 
         // Get the last file from the disk
+        #[allow(unused_assignments)]
         let mut last_elem = usize::MAX;
         loop {
             let last = disk.pop().unwrap();
@@ -53,7 +54,7 @@ pub fn solve_part_one(data: &[usize]) -> usize {
     let disk: Vec<_> = data
         .iter()
         .enumerate()
-        .map(|(idx, elt)| {
+        .flat_map(|(idx, elt)| {
             if idx % 2 == 0 {
                 // We are on a file node
                 vec![Block::File(idx / 2); *elt]
@@ -62,7 +63,6 @@ pub fn solve_part_one(data: &[usize]) -> usize {
                 vec![Block::Empty; *elt]
             }
         })
-        .flatten()
         .collect();
 
     // Compact the disk
@@ -88,10 +88,8 @@ fn compute_first_empty_space(bitmap: &[u8], len: usize) -> Option<usize> {
         }
 
         // If start is defined, try to fit the shape. We know that we are on a free space
-        if start != usize::MAX {
-            if idx - start + 1 >= len {
-                return Some(start);
-            }
+        if start != usize::MAX && idx - start + 1 >= len {
+            return Some(start);
         }
     }
 
@@ -127,8 +125,8 @@ pub fn solve_part_two(data: &[usize]) -> usize {
     // Create a disk bitmap
     let mut bitmap: Vec<u8> = vec![0; disk[disk.len() - 1].position + disk[disk.len() - 1].size];
     for file in &disk {
-        for i in file.position..file.position + file.size {
-            bitmap[i] = 1;
+        for item in bitmap.iter_mut().skip(file.position).take(file.size) {
+            *item = 1;
         }
     }
 
@@ -141,13 +139,13 @@ pub fn solve_part_two(data: &[usize]) -> usize {
             }
 
             // Update the bitmap to remove the file
-            for i in file.position..file.position + file.size {
-                bitmap[i] = 0;
+            for item in bitmap.iter_mut().skip(file.position).take(file.size) {
+                *item = 0;
             }
 
             // Update the bitmap to add the file
-            for i in position..position + file.size {
-                bitmap[i] = 1;
+            for item in bitmap.iter_mut().skip(position).take(file.size) {
+                *item = 1;
             }
 
             //  Move the file

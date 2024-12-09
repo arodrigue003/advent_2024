@@ -1,4 +1,7 @@
-use crate::day09::models::{Block, File};
+use crate::day09::models::{Block, EmptySpace, File};
+use std::collections::BTreeSet;
+
+static BITMAP_SIZE: usize = 100000;
 
 pub fn compact_disk(mut disk: Vec<Block>) -> Vec<Block> {
     // Compact it
@@ -73,45 +76,50 @@ pub fn solve_part_one(data: &[usize]) -> usize {
 }
 
 /// Look for the first empty space that can contains the file data if it exists
-fn compute_first_empty_space(bitmap: &[u8], len: usize) -> Option<usize> {
-    let mut start: usize = usize::MAX;
-    for (idx, elt) in bitmap.iter().enumerate() {
-        // If the element is occupied, set start and skip this position as it is not valid
-        if *elt == 1 {
-            start = usize::MAX;
-            continue;
-        }
-
-        // if start equals usize::MAX, it means last position was not valid, check if this one is.
-        if start == usize::MAX && *elt == 0 {
-            start = idx
-        }
-
-        // If start is defined, try to fit the shape. We know that we are on a free space
-        if start != usize::MAX && idx - start + 1 >= len {
-            return Some(start);
+/// First element is the bracket, second one is the position.
+fn compute_first_empty_space(bitmap: &[BTreeSet<usize>], len: usize) -> Option<(usize, usize)> {
+    // Look for empty spaces in the tree
+    let mut min_pos = (0,usize::MAX);
+    for bracket in len..BITMAP_SIZE {
+        if let Some(position) = bitmap[bracket].first() {
+            if *position < min_pos.1 {
+                min_pos = (bracket, *position);
+            }
         }
     }
 
-    None
+    if min_pos.1 != usize::MAX {
+        Some(min_pos)
+    } else {
+        None
+    }
 }
 
 pub fn solve_part_two(data: &[usize]) -> usize {
     // Create the list of files
     let mut current_position: usize = 0;
-    let mut disk: Vec<_> = data
+    let (disk, empty_spaces): (Vec<_>, Vec<_>) = data
         .iter()
         .enumerate()
-        .filter_map(|(idx, elt)| {
+        .map(|(idx, elt)| {
             let file = if idx % 2 == 0 {
                 // We are on a file node
-                Some(File {
-                    id: idx / 2,
-                    position: current_position,
-                    size: *elt,
-                })
+                (
+                    Some(File {
+                        id: idx / 2,
+                        position: current_position,
+                        size: *elt,
+                    }),
+                    None,
+                )
             } else {
-                None
+                (
+                    None,
+                    Some(EmptySpace {
+                        position: current_position,
+                        size: *elt,
+                    }),
+                )
             };
 
             // Increase the position
@@ -122,34 +130,66 @@ pub fn solve_part_two(data: &[usize]) -> usize {
         })
         .collect();
 
-    // Create a disk bitmap
-    let mut bitmap: Vec<u8> = vec![0; disk[disk.len() - 1].position + disk[disk.len() - 1].size];
-    for file in &disk {
-        for item in bitmap.iter_mut().skip(file.position).take(file.size) {
-            *item = 1;
-        }
+    // Get the list of files
+    let mut disk: Vec<_> = disk.into_iter().filter_map(|elt| elt).collect();
+
+    // Create the bitmap
+    // 1. filter out empty elements
+    let empty_spaces: Vec<_> = empty_spaces.into_iter().filter_map(|elt| elt).collect();
+    // 2. create the bitmap
+    let mut bitmap: Vec<_> = vec![BTreeSet::new(); BITMAP_SIZE];
+    // 3. fill it
+    for empty_space in empty_spaces {
+        bitmap[empty_space.size].insert(empty_space.position);
     }
 
     // Try to compact the disk from the end
+    // 1. get the highest pos
+    let mut latest_pos = disk[disk.len()-1].position;
+    // 2. Do the compacting
     for file in disk.iter_mut().rev() {
-        if let Some(position) = compute_first_empty_space(&bitmap, file.size) {
+        if let Some((bracket, position)) = compute_first_empty_space(&bitmap, file.size) {
             // Check if the new position is an improvement
             if position >= file.position {
                 continue;
             }
 
-            // Update the bitmap to remove the file
-            for item in bitmap.iter_mut().skip(file.position).take(file.size) {
-                *item = 0;
+            // Remove the position in the bracket
+            bitmap[bracket].remove(&position);
+
+            // If needed, add the remaining free space to the according bracket
+            if bracket > file.size {
+                bitmap[bracket - file.size].insert(position + file.size);
             }
 
-            // Update the bitmap to add the file
-            for item in bitmap.iter_mut().skip(position).take(file.size) {
-                *item = 1;
+            // Add the fill freed space to the bitmap
+            // 1. look for the free space before the file
+            let mut start = file.position;
+            for bracket in 0..BITMAP_SIZE {
+                if file.position >= bracket && bitmap[bracket].get(&(file.position - bracket)).is_some() {
+                    // We found the free space before the file, remove it to add it to the pool
+                    bitmap[bracket].remove(&(file.position - bracket));
+                    start = file.position - bracket;
+                    break
+                }
             }
+            // 2. look for the free space after the file
+            let mut end = file.position + file.size;
+            for bracket in 0..BITMAP_SIZE {
+                if bitmap[bracket].get(&(file.position + file.size)).is_some() {
+                    // We found the free space before the file, remove it to add it to the pool
+                    bitmap[bracket].remove(&(file.position + file.size));
+                    end = file.position + file.size + bracket;
+                    break
+                }
+            }
+            // 3. add the new space to the bracket if we are not at the end
+            bitmap[end-start].insert(start);
 
             //  Move the file
             file.position = position;
+
+            // println!("{:#?}", &bitmap);
         }
     }
 

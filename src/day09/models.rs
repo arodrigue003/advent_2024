@@ -10,3 +10,9 @@ pub struct File {
     pub position: usize,
     pub size: usize
 }
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct EmptySpace {
+    pub position: usize,
+    pub size: usize
+}

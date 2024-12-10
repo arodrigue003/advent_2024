@@ -1,9 +1,12 @@
-use crate::day10::models::MapWithBorder;
 use std::collections::HashSet;
+
+use crate::day10::models::MapWithBorder;
+
+type CacheEntry = Vec<Vec<Option<HashSet<(usize, usize)>>>>;
 
 fn compute_trail_score_part_one(
     map: &MapWithBorder,
-    cache: &mut Vec<Vec<Option<HashSet<(usize, usize)>>>>,
+    cache: &mut CacheEntry,
     x: usize,
     y: usize,
 ) -> usize {
@@ -27,25 +30,25 @@ fn compute_trail_score_part_one(
     if map.grid[y - 1][x] == value + 1 {
         compute_trail_score_part_one(map, cache, x, y - 1);
         // We know that the hashset for the neighbor is now defined by construction of the algorithm
-        end_set = end_set.union(cache[y-1][x].as_ref().unwrap()).cloned().collect();
+        end_set = end_set.union(cache[y - 1][x].as_ref().unwrap()).cloned().collect();
     }
     // Look right
     if map.grid[y][x + 1] == value + 1 {
         compute_trail_score_part_one(map, cache, x + 1, y);
         // We know that the hashset for the neighbor is now defined by construction of the algorithm
-        end_set = end_set.union(cache[y][x+1].as_ref().unwrap()).cloned().collect();
+        end_set = end_set.union(cache[y][x + 1].as_ref().unwrap()).cloned().collect();
     }
     // Look down
     if map.grid[y + 1][x] == value + 1 {
         compute_trail_score_part_one(map, cache, x, y + 1);
         // We know that the hashset for the neighbor is now defined by construction of the algorithm
-        end_set = end_set.union(cache[y+1][x].as_ref().unwrap()).cloned().collect();
+        end_set = end_set.union(cache[y + 1][x].as_ref().unwrap()).cloned().collect();
     }
     // Look left
     if map.grid[y][x - 1] == value + 1 {
         compute_trail_score_part_one(map, cache, x - 1, y);
         // We know that the hashset for the neighbor is now defined by construction of the algorithm
-        end_set = end_set.union(cache[y][x-1].as_ref().unwrap()).cloned().collect();
+        end_set = end_set.union(cache[y][x - 1].as_ref().unwrap()).cloned().collect();
     }
 
     // Set the cache with the result
@@ -65,7 +68,7 @@ pub fn solve_part_one(map: &MapWithBorder) -> usize {
     for y in 1..(map.width - 1) {
         for x in 1..(map.height - 1) {
             if map.grid[y][x] == 0 {
-                result += compute_trail_score_part_one(&map, &mut cache, x, y);
+                result += compute_trail_score_part_one(map, &mut cache, x, y);
             }
         }
     }
@@ -122,7 +125,7 @@ pub fn solve_part_two(map: &MapWithBorder) -> usize {
     for y in 1..(map.width - 1) {
         for x in 1..(map.height - 1) {
             if map.grid[y][x] == 0 {
-                result += compute_trail_score_part_two(&map, &mut cache, x, y);
+                result += compute_trail_score_part_two(map, &mut cache, x, y);
             }
         }
     }

@@ -1,7 +1,6 @@
-use crate::day09::models::{Block, EmptySpace, File};
 use std::collections::BTreeSet;
 
-static BITMAP_SIZE: usize = 100000;
+use crate::day09::models::{Block, EmptySpace, File};
 
 pub fn compact_disk(mut disk: Vec<Block>) -> Vec<Block> {
     // Compact it
@@ -79,9 +78,9 @@ pub fn solve_part_one(data: &[usize]) -> usize {
 /// First element is the bracket, second one is the position.
 fn compute_first_empty_space(bitmap: &[BTreeSet<usize>], len: usize) -> Option<(usize, usize)> {
     // Look for empty spaces in the tree
-    let mut min_pos = (0,usize::MAX);
-    for bracket in len..BITMAP_SIZE {
-        if let Some(position) = bitmap[bracket].first() {
+    let mut min_pos = (0, usize::MAX);
+    for (bracket, item) in bitmap.iter().enumerate().take(10).skip(len) {
+        if let Some(position) = item.first() {
             if *position < min_pos.1 {
                 min_pos = (bracket, *position);
             }
@@ -131,22 +130,19 @@ pub fn solve_part_two(data: &[usize]) -> usize {
         .collect();
 
     // Get the list of files
-    let mut disk: Vec<_> = disk.into_iter().filter_map(|elt| elt).collect();
+    let mut disk: Vec<_> = disk.into_iter().flatten().collect();
 
     // Create the bitmap
     // 1. filter out empty elements
-    let empty_spaces: Vec<_> = empty_spaces.into_iter().filter_map(|elt| elt).collect();
+    let empty_spaces: Vec<_> = empty_spaces.into_iter().flatten().collect();
     // 2. create the bitmap
-    let mut bitmap: Vec<_> = vec![BTreeSet::new(); BITMAP_SIZE];
+    let mut bitmap: Vec<_> = vec![BTreeSet::new(); 10];
     // 3. fill it
     for empty_space in empty_spaces {
         bitmap[empty_space.size].insert(empty_space.position);
     }
 
     // Try to compact the disk from the end
-    // 1. get the highest pos
-    let mut latest_pos = disk[disk.len()-1].position;
-    // 2. Do the compacting
     for file in disk.iter_mut().rev() {
         if let Some((bracket, position)) = compute_first_empty_space(&bitmap, file.size) {
             // Check if the new position is an improvement
@@ -162,34 +158,10 @@ pub fn solve_part_two(data: &[usize]) -> usize {
                 bitmap[bracket - file.size].insert(position + file.size);
             }
 
-            // Add the fill freed space to the bitmap
-            // 1. look for the free space before the file
-            let mut start = file.position;
-            for bracket in 0..BITMAP_SIZE {
-                if file.position >= bracket && bitmap[bracket].get(&(file.position - bracket)).is_some() {
-                    // We found the free space before the file, remove it to add it to the pool
-                    bitmap[bracket].remove(&(file.position - bracket));
-                    start = file.position - bracket;
-                    break
-                }
-            }
-            // 2. look for the free space after the file
-            let mut end = file.position + file.size;
-            for bracket in 0..BITMAP_SIZE {
-                if bitmap[bracket].get(&(file.position + file.size)).is_some() {
-                    // We found the free space before the file, remove it to add it to the pool
-                    bitmap[bracket].remove(&(file.position + file.size));
-                    end = file.position + file.size + bracket;
-                    break
-                }
-            }
-            // 3. add the new space to the bracket if we are not at the end
-            bitmap[end-start].insert(start);
+            // We don't need to mark the file used space as free since we treat them from the back
 
             //  Move the file
             file.position = position;
-
-            // println!("{:#?}", &bitmap);
         }
     }
 

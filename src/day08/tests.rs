@@ -1,5 +1,5 @@
 use crate::common::{test_part_one_common, test_part_two_common};
-use crate::dayxx::DayXX;
+use crate::day08::Day08;
 
 static INPUT_EXAMPLE: &str = "............
 ........0...
@@ -17,10 +17,10 @@ static INPUT_EXAMPLE: &str = "............
 
 #[test]
 fn test_part_one() {
-    test_part_one_common(DayXX::default(), INPUT_EXAMPLE, 14);
+    test_part_one_common(Day08::default(), INPUT_EXAMPLE, 14);
 }
 
 #[test]
 fn test_part_two() {
-    test_part_two_common(DayXX::default(), INPUT_EXAMPLE, 0);
+    test_part_two_common(Day08::default(), INPUT_EXAMPLE, 34);
 }

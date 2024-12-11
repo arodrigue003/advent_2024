@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-
 fn get_stone_count_rec(value: usize, remaining_steps: usize, cache: &mut HashMap<(usize, usize), usize>) -> usize {
     // Check if the result was cached
     if let Some(result) = cache.get(&(value, remaining_steps)) {

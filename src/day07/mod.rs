@@ -5,16 +5,17 @@ mod parser;
 #[cfg(test)]
 mod tests;
 
-use crate::day11::logic::{solve_part_one, solve_part_two};
-use crate::day11::parser::parse_input;
+use crate::day07::logic::{solve_part_one, solve_part_two};
+use crate::day07::models::Equation;
+use crate::day07::parser::parse_input;
 use crate::models::AdventSolution;
 
 #[derive(Default)]
-pub struct Day11 {
-    parsed_data: Option<Vec<usize>>,
+pub struct Day07 {
+    parsed_data: Option<Vec<Equation>>,
 }
 
-impl AdventSolution for Day11 {
+impl AdventSolution for Day07 {
     fn parse(&mut self, _data: String) {
         self.parsed_data = Some(parse_input(_data));
     }

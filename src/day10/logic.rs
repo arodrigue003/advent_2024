@@ -4,12 +4,7 @@ use crate::day10::models::MapWithBorder;
 
 type CacheEntry = Vec<Vec<Option<HashSet<(usize, usize)>>>>;
 
-fn compute_trail_score_part_one(
-    map: &MapWithBorder,
-    cache: &mut CacheEntry,
-    x: usize,
-    y: usize,
-) -> usize {
+fn compute_trail_score_part_one(map: &MapWithBorder, cache: &mut CacheEntry, x: usize, y: usize) -> usize {
     // First check if we have a result in the cache
     if let Some(cached_value) = &cache[y][x] {
         return cached_value.len();

@@ -13,7 +13,7 @@ use advent_2024::day08::Day08;
 use advent_2024::day09::Day09;
 use advent_2024::day10::Day10;
 use advent_2024::day11::Day11;
-// use advent_2024::day12::Day12;
+use advent_2024::day12::Day12;
 // use advent_2024::day13::Day13;
 // use advent_2024::day14::Day14;
 // use advent_2024::day15::Day15;
@@ -122,7 +122,7 @@ fn main() {
         Box::<Day09>::default(),
         Box::<Day10>::default(),
         Box::<Day11>::default(),
-        // Box::<Day12>::default(),
+        Box::<Day12>::default(),
         // Box::<Day13>::default(),
         // Box::<Day14>::default(),
         // Box::<Day15>::default(),

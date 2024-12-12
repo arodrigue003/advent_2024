@@ -22,8 +22,8 @@ fn get_stone_count_rec(value: usize, remaining_steps: usize, cache: &mut HashMap
     // Get the result from recursion
     let result = if digit_count % 2 == 0 {
         // we have an even number of digit, split it and return the result for each part
-        get_stone_count_rec(value / 10usize.pow(digit_count as u32 / 2), remaining_steps - 1, cache)
-            + get_stone_count_rec(value % 10usize.pow(digit_count as u32 / 2), remaining_steps - 1, cache)
+        get_stone_count_rec(value / 10usize.pow(digit_count / 2), remaining_steps - 1, cache)
+            + get_stone_count_rec(value % 10usize.pow(digit_count / 2), remaining_steps - 1, cache)
     } else {
         get_stone_count_rec(value * 2024, remaining_steps - 1, cache)
     };

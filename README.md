@@ -2,6 +2,7 @@
 
 | day | input type                             | parsing                                           |
 |-----|----------------------------------------|---------------------------------------------------|
+| 7   |                                        | nom                                               |
 | 8   | A map of character with empty elements | Iter over lines and get the char and add a border |
 | 9   | Line of chars to treat as ints         | `.chars()`                                        |
 | 10  | A map of chars                         | Iter over lines and map the char value to an int  |

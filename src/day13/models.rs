@@ -16,3 +16,15 @@ impl Display for Machine {
         )
     }
 }
+
+/// Contains the solution of the equation ax + by = c given by the solve_diophantine function where
+/// `x0 - n * a0` and `y0 + n * b0` for `0 <= n <= max_n` are every positive solution of the
+/// equation ax + by = c
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DiophantineSolution {
+    pub x0: i64,
+    pub a0: i64,
+    pub y0: i64,
+    pub b0: i64,
+    pub max_n: i64,
+}

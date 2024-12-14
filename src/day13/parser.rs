@@ -2,9 +2,9 @@ use crate::day13::models::Machine;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::character::complete::{i64 as i64_parser, line_ending};
-use nom::combinator::{map, opt};
-use nom::multi::{many0, many1, separated_list1};
-use nom::sequence::{tuple, Tuple};
+use nom::combinator::map;
+use nom::multi::{many0, many1};
+use nom::sequence::tuple;
 use nom::{IResult, Parser};
 
 fn parse_button(input: &str) -> IResult<&str, (i64, i64)> {

@@ -28,3 +28,10 @@ pub struct DiophantineSolution {
     pub b0: i64,
     pub max_n: i64,
 }
+
+impl DiophantineSolution {
+    /// Compute the sum for a, b and n given
+    pub fn compute(&self, a:i64, b:i64, n: i64) -> i64 {
+        a * (self.x0 - n * self.a0) + b * (self.y0 + n * self.b0)
+    }
+}

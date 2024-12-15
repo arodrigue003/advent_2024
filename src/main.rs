@@ -4,7 +4,7 @@ use std::time::Instant;
 
 use advent_2024::day01::Day01;
 use advent_2024::day02::Day02;
-// use advent_2024::day03::Day03;
+use advent_2024::day03::Day03;
 // use advent_2024::day04::Day04;
 // use advent_2024::day05::Day05;
 // use advent_2024::day06::Day06;
@@ -113,7 +113,7 @@ fn main() {
     let mut solvers: Vec<Box<dyn AdventSolution>> = vec![
         Box::<Day01>::default(),
         Box::<Day02>::default(),
-        // Box::<Day03>::default(),
+        Box::<Day03>::default(),
         // Box::<Day04>::default(),
         // Box::<Day05>::default(),
         // Box::<Day06>::default(),

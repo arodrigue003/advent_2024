@@ -2,7 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::Instant;
 
-// use advent_2024::day01::Day01;
+use advent_2024::day01::Day01;
 // use advent_2024::day02::Day02;
 // use advent_2024::day03::Day03;
 // use advent_2024::day04::Day04;
@@ -111,7 +111,7 @@ fn run_day(day: usize, solution: &mut Box<dyn AdventSolution>, input: String) ->
 
 fn main() {
     let mut solvers: Vec<Box<dyn AdventSolution>> = vec![
-        // Box::<Day01>::default(),
+        Box::<Day01>::default(),
         // Box::<Day02>::default(),
         // Box::<Day03>::default(),
         // Box::<Day04>::default(),

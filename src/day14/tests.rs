@@ -1,7 +1,7 @@
 use crate::common::{test_part_one_common, test_part_two_common};
 use crate::day14::Day14;
 
-static INPUT_EXAMPLE: &str = "";
+static INPUT_EXAMPLE: &str = include_str!("../../input_examples/day14");
 
 #[test]
 fn test_part_one() {

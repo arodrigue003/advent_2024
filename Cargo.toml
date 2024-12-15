@@ -12,5 +12,6 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.4.11", features = ["derive"] }
 comfy-table = "7.1.0"
+hashbrown = "0.15.2"
 itertools = "0.13.0"
 nom = "7.1.3"

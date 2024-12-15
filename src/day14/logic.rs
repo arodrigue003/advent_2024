@@ -1,5 +1,5 @@
 use crate::day14::models::{Bathroom, Robot};
-use std::collections::{HashMap, HashSet};
+use hashbrown::{HashMap, HashSet};
 
 fn simulate_robot(robot: &Robot, width: i64, height: i64, steps: usize) -> (i64, i64) {
     let mut cur_x = robot.x;

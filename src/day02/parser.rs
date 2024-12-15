@@ -1,4 +1,4 @@
-use nom::character::complete::{i64 as i64_parser, line_ending, space1};
+use nom::character::complete::{i64 as i64_parser, line_ending};
 use nom::combinator::{map, opt};
 use nom::multi::{many1, separated_list1};
 use nom::sequence::tuple;

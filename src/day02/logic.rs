@@ -1,32 +1,32 @@
 use itertools::Itertools;
 
-pub fn solve_part_one(reports: &[Vec<i64>]) -> usize {
-    reports
+fn is_safe(report: &[i64]) -> bool {
+    report.iter().tuple_windows().all(|(left, right)| {
+        let diff = left.abs_diff(*right);
+        diff >= 1 && diff <= 3
+    }) && report
         .iter()
-        .filter(|report| {
-            report.iter().tuple_windows().all(|(left, right)| {
-                let diff = left.abs_diff(*right);
-                diff >= 1 && diff <= 3
-            }) && report
-                .iter()
-                .tuple_windows()
-                .map(|(left, right)| if right > left { 1i64 } else { -1i64 })
-                .sum::<i64>()
-                .abs()
-                == report.len() as i64 - 1
-        })
-        .count()
+        .tuple_windows()
+        .map(|(left, right)| if right > left { 1i64 } else { -1i64 })
+        .sum::<i64>()
+        .abs()
+        == report.len() as i64 - 1
 }
 
-pub fn solve_part_two(reports: &[Vec<i64>]) -> u32 {
-    for report in reports {
-        let diff_safe = report.iter().tuple_windows().filter(|(left, right)| {
-            let diff = left.abs_diff(**right);
-            diff >= 1 && diff <= 3
-        }).count() >= report.len() - 1;
+pub fn solve_part_one(reports: &[Vec<i64>]) -> usize {
+    reports.iter().filter(|report| is_safe(*report)).count()
+}
 
-        println!("{diff_safe}")
-    };
-
-    0
+pub fn solve_part_two(reports: &[Vec<i64>]) -> usize {
+    reports.iter().filter(|report| {
+        if is_safe(*report) {
+            true
+        } else {
+            (0..report.len()).any(|i| {
+                let mut temp_report = (*report).clone();
+                temp_report.remove(i);
+                is_safe(&temp_report)
+            })
+        }
+    }).count()
 }

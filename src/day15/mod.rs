@@ -6,7 +6,7 @@ mod parser;
 mod tests;
 
 use crate::day15::logic::{solve_part_one, solve_part_two};
-use crate::day15::models::Warehouse;
+use models::warehouse::Warehouse;
 use crate::day15::parser::parse_input;
 use crate::models::AdventSolution;
 

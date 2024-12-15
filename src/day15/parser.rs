@@ -1,4 +1,6 @@
-use crate::day15::models::{Coordinates, Grid, Instruction, MapTile, Warehouse};
+use crate::day15::models::instruction::Instruction;
+use crate::day15::models::coordinates::Coordinates;
+use crate::day15::models::warehouse::{Grid, MapTile, Warehouse};
 
 pub fn parse_input(input: String) -> Warehouse {
     let mut grid: Vec<Vec<MapTile>> = vec![];

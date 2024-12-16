@@ -79,7 +79,6 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
         }
     }
 
-
     count
 }
 
@@ -98,5 +97,51 @@ fn search_pattern(pattern: &'static [char; 4], item: char, pattern_pos: &mut usi
 }
 
 pub fn solve_part_two(grid: &[Vec<char>]) -> u32 {
-    0
+    let width = grid[0].len();
+    let height = grid.len();
+
+    // walkers
+    let mut m_count;
+    let mut s_count;
+
+    // Count
+    let mut count = 0;
+
+    for i in 1..height-1 {
+        for j in 1..width-1 {
+            if grid[i][j] == 'A' {
+                m_count = 0;
+                s_count = 0;
+                match grid[i-1][j-1] {
+                    'M' => m_count += 1,
+                    'S' => s_count += 1,
+                    _ => {}
+                }
+                match grid[i+1][j+1] {
+                    'M' => m_count += 1,
+                    'S' => s_count += 1,
+                    _ => {}
+                }
+                // Prevent MAM and SAS words
+                if m_count ==2 || s_count == 2 {
+                    continue
+                }
+                match grid[i-1][j+1] {
+                    'M' => m_count += 1,
+                    'S' => s_count += 1,
+                    _ => {}
+                }
+                match grid[i+1][j-1] {
+                    'M' => m_count += 1,
+                    'S' => s_count += 1,
+                    _ => {}
+                }
+                if m_count == 2 && s_count == 2 {
+                    count += 1;
+                }
+            }
+        }
+    }
+
+    count
 }

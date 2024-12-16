@@ -9,5 +9,5 @@ fn test_part_one() {
 
 #[test]
 fn test_part_two() {
-    test_part_two_common(Day04::default(), INPUT_EXAMPLE, 0);
+    test_part_two_common(Day04::default(), INPUT_EXAMPLE, 9);
 }

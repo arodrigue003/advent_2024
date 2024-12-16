@@ -1,8 +1,5 @@
 use crate::day05::models::ManualUpdates;
 use hashbrown::{HashMap, HashSet};
-use petgraph::algo::all_simple_paths;
-// use petgraph::dot::{Config, Dot};
-use petgraph::Graph;
 
 /// Return true if the order between two pages is valid or if it is not defined
 fn is_order_valid(left: i32, right: i32, rules: &HashMap<i32, HashSet<i32>>) -> bool {
@@ -42,29 +39,9 @@ pub fn solve_part_one(manual_updates: &ManualUpdates) -> i32 {
     score
 }
 
-fn fix_order(
-    update: &Vec<i32>,
-    rules: &HashMap<i32, HashSet<i32>>,
-    reverse_rules: &HashMap<i32, HashSet<i32>>
-) -> i32 {
-    // Find the last element, this is always the only element that does not have a page of the
-    // manual after it
-    // 1. To do that, transform the update to a set
+fn fix_order(update: &Vec<i32>, rules: &HashMap<i32, HashSet<i32>>, reverse_rules: &HashMap<i32, HashSet<i32>>) -> i32 {
+    // Create a set from the update
     let update_set: HashSet<i32> = update.iter().map(|val| *val).collect();
-    // 2. For every element, find the one for which the update_set intersection with its follower
-    // rules is empty
-    let mut end = 0;
-    for elt in update {
-        if let Some(followers) = rules.get(elt) {
-            if followers.intersection(&update_set).count() == 0 {
-                end = *elt;
-                break;
-            }
-        } else {
-            end = *elt;
-            break;
-        }
-    }
 
     // Find the first element, this always the only element that does not have a page of the manual
     // before it
@@ -81,35 +58,43 @@ fn fix_order(
         }
     }
 
-    // Build a graph with these nodes
-    let mut nodes = HashMap::new();
-    let mut graph = Graph::new();
-    // Add nodes from the update
-    for page in update {
-        nodes.entry(*page).or_insert_with(|| graph.add_node(*page));
+    // Create a subset of rules that only contains our rules
+    let mut sub_rules: HashMap<i32, HashSet<i32>> = HashMap::new();
+    for (before, afters) in rules {
+        for after in afters {
+            if update_set.contains(after) && update_set.contains(before) {
+                sub_rules.entry(*before).or_default().insert(*after);
+            }
+        }
     }
-    // Add rules from the rule set
-    for first in update {
-        if let Some(successors) = rules.get(first) {
-            for successor in successors {
-                if update_set.contains(successor) {
-                    graph.add_edge(nodes[first], nodes[successor], 1);
+    // Clone it for read only access
+    let sub_rules_ref = sub_rules.clone();
+
+    // We note that if we have the rule A->(B|C) but if B->C then we can remove C from A->(B|C)
+    for page in update {
+        if let Some(successor) = sub_rules_ref.get(page) {
+            for first in successor {
+                for second in successor {
+                    if first != second {
+                        if let Some(first_succ) = sub_rules_ref.get(first) {
+                            if first_succ.contains(second) {
+                                // page is A, first is B, C is second. Remove A->C so page->second
+                                sub_rules.get_mut(page).unwrap().remove(second);
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    // Find the path with update.len() - 2 inner nodes
-    let ways: Vec<_> = all_simple_paths::<Vec<_>, _>(
-        &graph,
-        nodes[&start],
-        nodes[&end],
-        update.len() - 2,
-        Some(update.len() - 2),
-    )
-    .collect();
-
-    graph[ways[0][update.len() / 2]]
+    // Now each rule should only have one image, just iter it from the start until we find the
+    // middle one
+    let mut current = start;
+    for _ in 0..update.len() / 2 {
+        current = *sub_rules[&current].iter().next().unwrap();
+    }
+    current
 }
 
 pub fn solve_part_two(manual_updates: &ManualUpdates) -> i32 {

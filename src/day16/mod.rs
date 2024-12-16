@@ -4,6 +4,7 @@ mod parser;
 
 #[cfg(test)]
 mod tests;
+mod astar;
 
 use crate::day16::logic::{prepare_data, solve_part_one, solve_part_two};
 use crate::day16::models::{Map, PreparedData};

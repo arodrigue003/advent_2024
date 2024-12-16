@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 static PATTERN: [char; 4] = ['X', 'M', 'A', 'S'];
 static ANTI_PATTERN: [char; 4] = ['S', 'A', 'M', 'X'];
 
@@ -6,16 +8,12 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     let width = grid[0].len();
     let height = grid.len();
 
-    // if width != height {
-    //     unimplemented!("Case not handled");
-    // }
-
     // Count
     let mut count = 0;
 
     // Init walkers
-    let mut pattern_pos = 0;
-    let mut anti_pattern_pos = 0;
+    let mut pattern_pos;
+    let mut anti_pattern_pos;
 
     // Look horizontally
     for line in grid {
@@ -41,45 +39,45 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     for i in 0..height {
         pattern_pos = 0;
         anti_pattern_pos = 0;
-        for j in 0..=i {
+        for j in 0..min(i+1, width) {
             let item = grid[i - j][j];
             search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
             search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
         }
     }
 
-    // // Look on the positive diagonal second part
-    // for i in 1..width {
-    //     pattern_pos = 0;
-    //     anti_pattern_pos = 0;
-    //     for j in 0..(height - i) {
-    //         let item = grid[height - j - 1][i + j];
-    //         search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
-    //         search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
-    //     }
-    // }
-    //
-    // // Look on the negative diagonal first part
-    // for i in 0..height {
-    //     pattern_pos = 0;
-    //     anti_pattern_pos = 0;
-    //     for j in 0..=i {
-    //         let item = grid[height + j - i - 1][j];
-    //         search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
-    //         search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
-    //     }
-    // }
-    //
-    // // Look on the negative diagonal second part
-    // for i in 0..width {
-    //     pattern_pos = 0;
-    //     anti_pattern_pos = 0;
-    //     for j in 0..(height - i) {
-    //         let item = grid[j][i+j];
-    //         search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
-    //         search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
-    //     }
-    // }
+    // Look on the positive diagonal second part
+    for i in 1..width {
+        pattern_pos = 0;
+        anti_pattern_pos = 0;
+        for j in 0..min(width-i, height) {
+            let item = grid[height - j - 1][i + j];
+            search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
+            search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
+        }
+    }
+
+    // Look on the negative diagonal first part
+    for i in 0..height {
+        pattern_pos = 0;
+        anti_pattern_pos = 0;
+        for j in 0..min(i+1, width) {
+            let item = grid[height + j - i - 1][j];
+            search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
+            search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
+        }
+    }
+
+    // Look on the negative diagonal second part
+    for i in 1..width {
+        pattern_pos = 0;
+        anti_pattern_pos = 0;
+        for j in 0..min(width-i, height) {
+            let item = grid[j][i+j];
+            search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
+            search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
+        }
+    }
 
 
     count

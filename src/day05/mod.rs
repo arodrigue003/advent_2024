@@ -6,12 +6,13 @@ mod parser;
 mod tests;
 
 use crate::day05::logic::{solve_part_one, solve_part_two};
+use crate::day05::models::ManualUpdates;
 use crate::day05::parser::parse_input;
 use crate::models::AdventSolution;
 
 #[derive(Default)]
 pub struct Day05 {
-    parsed_data: Option<String>,
+    parsed_data: Option<ManualUpdates>,
 }
 
 impl AdventSolution for Day05 {

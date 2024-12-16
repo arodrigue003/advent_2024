@@ -1,8 +1,4 @@
 use std::fmt::{Display, Formatter};
-use petgraph::{Graph, Undirected};
-use petgraph::graph::NodeIndex;
-
-pub type MapGraph = Graph<(usize, usize, char), u32, Undirected>;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Tile {
@@ -42,11 +38,4 @@ impl Display for Map {
         }
         Ok(())
     }
-}
-
-pub struct PreparedData {
-    pub graph: MapGraph,
-    pub start: NodeIndex,
-    pub hor_end: NodeIndex,
-    pub ver_end: NodeIndex,
 }

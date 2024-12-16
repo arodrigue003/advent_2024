@@ -6,15 +6,16 @@ mod parser;
 mod tests;
 mod astar;
 
-use crate::day16::logic::{prepare_data, solve_part_one, solve_part_two};
-use crate::day16::models::{Map, PreparedData};
+use hashbrown::HashSet;
+use crate::day16::logic::{prepare_data};
+use crate::day16::models::{Map};
 use crate::day16::parser::parse_input;
 use crate::models::AdventSolution;
 
 #[derive(Default)]
 pub struct Day16 {
     parsed_data: Option<Map>,
-    prepared_data: Option<PreparedData>
+    prepared_data: Option<(i32, HashSet<(usize, usize)>)>
 }
 
 impl AdventSolution for Day16 {
@@ -27,10 +28,10 @@ impl AdventSolution for Day16 {
     }
 
     fn solve_part_one(&self) -> i128 {
-        solve_part_one(self.prepared_data.as_ref().unwrap()) as i128
+        self.prepared_data.as_ref().unwrap().0 as i128
     }
 
     fn solve_part_two(&self) -> i128 {
-        solve_part_two(self.prepared_data.as_ref().unwrap()) as i128
+        self.prepared_data.as_ref().unwrap().1.len() as i128
     }
 }

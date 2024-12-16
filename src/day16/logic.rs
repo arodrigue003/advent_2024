@@ -1,11 +1,10 @@
-use crate::day16::models::{Map, PreparedData, Tile};
+use crate::day16::models::{Map, Tile};
 use hashbrown::HashSet;
-use petgraph::algo::astar;
 // use petgraph::dot::Dot;
 use crate::day16::astar::multi_astar;
 use petgraph::graph::Graph;
 
-pub fn prepare_data(map: &Map) -> PreparedData {
+pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
     let width = map.grid[0].len();
     let height = map.grid.len();
 
@@ -59,44 +58,21 @@ pub fn prepare_data(map: &Map) -> PreparedData {
     let hor_end = hor_nodes[map.end.0][map.end.1];
     let ver_end = ver_nodes[map.end.0][map.end.1];
 
-    PreparedData {
-        graph,
+
+    // Compute the shortest path and every nodes in it
+    let shortest_paths = multi_astar(
+        &graph,
         start,
-        hor_end,
-        ver_end,
-    }
-}
-
-pub fn solve_part_one(prepared_data: &PreparedData) -> u32 {
-    // Compute the shortest path
-    let path = astar(
-        &prepared_data.graph,
-        prepared_data.start,
-        |finish| finish == prepared_data.hor_end || finish == prepared_data.ver_end,
-        |e| *e.weight(),
-        |_| 0,
-    )
-    .unwrap();
-
-    path.0
-}
-
-pub fn solve_part_two(prepared_data: &PreparedData) -> usize {
-    // Compute the shortest path
-    let shortest_path = multi_astar(
-        &prepared_data.graph,
-        prepared_data.start,
-        |finish| finish == prepared_data.hor_end || finish == prepared_data.ver_end,
+        |finish| finish == hor_end || finish == ver_end,
         |e| *e.weight(),
     )
-    .unwrap();
+        .unwrap();
 
-    // We need to remove duplicates coordinates from the set
     let mut paths = HashSet::new();
-    for node in &shortest_path.1 {
-        let cost = &prepared_data.graph[*node];
+    for node in &shortest_paths.1 {
+        let cost = &graph[*node];
         paths.insert((cost.0, cost.1));
     }
 
-    paths.len()
+    (shortest_paths.0, paths)
 }

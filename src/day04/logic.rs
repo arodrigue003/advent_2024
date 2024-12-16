@@ -4,6 +4,7 @@ static PATTERN: [char; 4] = ['X', 'M', 'A', 'S'];
 static ANTI_PATTERN: [char; 4] = ['S', 'A', 'M', 'X'];
 
 /// We assume the grid is a square
+#[allow(clippy::needless_range_loop)]
 pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     let width = grid[0].len();
     let height = grid.len();

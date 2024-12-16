@@ -41,7 +41,7 @@ pub fn solve_part_one(manual_updates: &ManualUpdates) -> i32 {
 
 fn fix_order(update: &Vec<i32>, rules: &HashMap<i32, HashSet<i32>>, reverse_rules: &HashMap<i32, HashSet<i32>>) -> i32 {
     // Create a set from the update
-    let update_set: HashSet<i32> = update.iter().map(|val| *val).collect();
+    let update_set: HashSet<i32> = update.iter().copied().collect();
 
     // Find the first element, this always the only element that does not have a page of the manual
     // before it

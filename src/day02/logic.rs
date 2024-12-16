@@ -3,7 +3,7 @@ use itertools::Itertools;
 fn is_safe(report: &[i64]) -> bool {
     report.iter().tuple_windows().all(|(left, right)| {
         let diff = left.abs_diff(*right);
-        diff >= 1 && diff <= 3
+        (1..=3).contains(&diff)
     }) && report
         .iter()
         .tuple_windows()
@@ -14,12 +14,12 @@ fn is_safe(report: &[i64]) -> bool {
 }
 
 pub fn solve_part_one(reports: &[Vec<i64>]) -> usize {
-    reports.iter().filter(|report| is_safe(*report)).count()
+    reports.iter().filter(|report| is_safe(report)).count()
 }
 
 pub fn solve_part_two(reports: &[Vec<i64>]) -> usize {
     reports.iter().filter(|report| {
-        if is_safe(*report) {
+        if is_safe(report) {
             true
         } else {
             (0..report.len()).any(|i| {

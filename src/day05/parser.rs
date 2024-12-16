@@ -7,6 +7,8 @@ use nom::multi::{many1, separated_list1};
 use nom::sequence::tuple;
 use nom::{IResult, Parser};
 
+type ParsedManualUpdates = (Vec<(i32, i32)>, Vec<Vec<i32>>);
+
 fn parse_rule(input: &str) -> IResult<&str, (i32, i32)> {
     map(
         tuple((i32_parser, tag("|"), i32_parser, line_ending)),
@@ -23,7 +25,7 @@ fn parse_update(input: &str) -> IResult<&str, Vec<i32>> {
     .parse(input)
 }
 
-fn parse_manual_updates(input: &str) -> IResult<&str, (Vec<(i32, i32)>, Vec<Vec<i32>>)> {
+fn parse_manual_updates(input: &str) -> IResult<&str, ParsedManualUpdates> {
     map(
         tuple((many1(parse_rule), line_ending, many1(parse_update))),
         |(rules, _, updates)| (rules, updates),

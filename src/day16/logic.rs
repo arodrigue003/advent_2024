@@ -1,3 +1,4 @@
+// use colored::Colorize;
 use crate::day16::models::{Map, Tile};
 use hashbrown::HashSet;
 // use petgraph::dot::Dot;
@@ -13,19 +14,15 @@ pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
 
     // Create graph nodes from the grid for both horizontal and vertical nodes
     let hor_nodes: Vec<Vec<_>> = (0..height)
-        .into_iter()
         .map(|line| {
             (0..width)
-                .into_iter()
                 .map(|column| graph.add_node((line, column, 'H')))
                 .collect()
         })
         .collect();
     let ver_nodes: Vec<Vec<_>> = (0..height)
-        .into_iter()
         .map(|line| {
             (0..width)
-                .into_iter()
                 .map(|column| graph.add_node((line, column, 'V')))
                 .collect()
         })
@@ -67,6 +64,21 @@ pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
         |e| *e.weight(),
     )
         .unwrap();
+
+    // Display the result
+    // for (i, line) in map.grid.iter().enumerate() {
+    //     for (j, block) in line.iter().enumerate() {
+    //         if shortest_paths.1.contains(&hor_nodes[i][j]) || shortest_paths.1.contains(&ver_nodes[i][j]) {
+    //             print!("{}", "O".green().bold());
+    //         } else {
+    //             match block {
+    //                 Tile::Floor => print!("."),
+    //                 Tile::Wall => print!("#")
+    //             }
+    //         }
+    //     }
+    //     println!();
+    // }
 
     let mut paths = HashSet::new();
     for node in &shortest_paths.1 {

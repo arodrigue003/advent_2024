@@ -136,33 +136,10 @@ pub fn solve_part_two(program: &Program) -> u64 {
 
     // Perform the bruteforce
     for target in program.raw_instructions.iter().rev() {
-        for i in 0..2u64.pow(shift as u32) {
-            // reset the bruteforce program for this run
-            bruteforce_program.instruction_pointer = 0;
+        let new_value = bruteforce_inner_loop(&mut bruteforce_program, a, *target, shift, print_a).unwrap();
+        a = (a << shift) + new_value;
 
-            // Set the bruteforce program value of a for the try
-            bruteforce_program.registers.a = (a << shift) + i;
-
-            // If we print a, we should add another shift to prepared for the operation
-            if print_a {
-                bruteforce_program.registers.a <<= shift;
-            }
-
-            // println!("target:{}, i:{}, a:{:#b}", target, i, bruteforce_program.registers.a);
-
-            // Run the bruteforce program
-            let result = bruteforce_program.run();
-
-            // check the result
-            if result[0] == *target {
-                // We found a new value of a that is compatible, update a with it
-                a = (a << shift) + i;
-                // println!("We found a value for target {target}: {i:#b}");
-                break;
-            }
-        }
-
-        // println!("current A:{a:#b}");
+        println!("current A:{a:#b}");
     }
 
     // If we print a, we should add another shift to prepared for the operation
@@ -170,5 +147,45 @@ pub fn solve_part_two(program: &Program) -> u64 {
         a <<= shift;
     }
 
+    // Try it
+    let mut test_program = program.clone();
+    test_program.registers.a = a;
+    let result = test_program.run();
+    println!("{}", result.iter().map(|a| a.to_string()).join(","));
+
     a
+}
+
+fn bruteforce_inner_loop(
+    bruteforce_program: &mut Program,
+    a: u64,
+    target: u8,
+    shift: u64,
+    print_a: bool,
+) -> Option<u64> {
+    for i in 0..2u64.pow(shift as u32) {
+        // reset the bruteforce program for this run
+        bruteforce_program.instruction_pointer = 0;
+
+        // Set the bruteforce program value of a for the try
+        bruteforce_program.registers.a = (a << shift) + i;
+
+        // If we print a, we should add another shift to prepared for the operation
+        if print_a {
+            bruteforce_program.registers.a <<= shift;
+        }
+
+        // println!("target:{}, i:{}, a:{:#b}", target, i, bruteforce_program.registers.a);
+
+        // Run the bruteforce program
+        let result = bruteforce_program.run();
+
+        // check the result
+        if result[0] == target {
+            // We found a new value of a that is compatible, update a with it
+            return Some(i);
+        }
+    }
+
+    unreachable!()
 }

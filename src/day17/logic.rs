@@ -122,6 +122,9 @@ pub fn solve_part_two(program: &Program) -> u64 {
     // Get the max_shift of a for the bruteforce
     let (shift, print_a) = program.is_solvable().unwrap();
 
+    // Store values of A to test next
+    let mut to_test = vec![];
+
     // Create a copy of the program without the last instruction in order to allow for the
     // bruteforce
     let mut bruteforce_program = program.clone();
@@ -132,60 +135,57 @@ pub fn solve_part_two(program: &Program) -> u64 {
     // Set the first value of a
     // We do not need to set the value of B and C since their value are always set from A at each
     // run of the bruteforce program.
-    let mut a = 0;
+    to_test.push((0, program.raw_instructions.len() - 1));
 
     // Perform the bruteforce
-    for target in program.raw_instructions.iter().rev() {
-        let new_value = bruteforce_inner_loop(&mut bruteforce_program, a, *target, shift, print_a).unwrap();
-        a = (a << shift) + new_value;
+    while let Some((test_a, target_idx)) = to_test.pop() {
+        let target = program.raw_instructions[target_idx];
 
-        println!("current A:{a:#b}");
-    }
+        for i in (0..2u64.pow(shift as u32)).rev() {
+            // reset the bruteforce program for this run
+            bruteforce_program.instruction_pointer = 0;
 
-    // If we print a, we should add another shift to prepared for the operation
-    if print_a {
-        a <<= shift;
-    }
+            // Set the bruteforce program value of a for the try
+            bruteforce_program.registers.a = (test_a << shift) + i;
 
-    // Try it
-    let mut test_program = program.clone();
-    test_program.registers.a = a;
-    let result = test_program.run();
-    println!("{}", result.iter().map(|a| a.to_string()).join(","));
+            // If we print a, we should add another shift to prepared for the operation
+            if print_a {
+                bruteforce_program.registers.a <<= shift;
+            }
 
-    a
-}
+            // println!("target:{}, i:{}, a:{:#b}", target, i, bruteforce_program.registers.a);
 
-fn bruteforce_inner_loop(
-    bruteforce_program: &mut Program,
-    a: u64,
-    target: u8,
-    shift: u64,
-    print_a: bool,
-) -> Option<u64> {
-    for i in 0..2u64.pow(shift as u32) {
-        // reset the bruteforce program for this run
-        bruteforce_program.instruction_pointer = 0;
+            // Run the bruteforce program
+            let result = bruteforce_program.run();
 
-        // Set the bruteforce program value of a for the try
-        bruteforce_program.registers.a = (a << shift) + i;
+            // check the result
+            if result[0] == target {
+                // We found a new value of a that is compatible, Add it to the stack
 
-        // If we print a, we should add another shift to prepared for the operation
-        if print_a {
-            bruteforce_program.registers.a <<= shift;
-        }
+                // Compute the new value of a
+                let mut new_a = (test_a << shift) + i;
 
-        // println!("target:{}, i:{}, a:{:#b}", target, i, bruteforce_program.registers.a);
+                // If target_idx was 0, we found our solution
+                if target_idx == 0 {
+                    if print_a {
+                        new_a <<= shift;
+                    }
 
-        // Run the bruteforce program
-        let result = bruteforce_program.run();
+                    // Try it
+                    // let mut test_program = program.clone();
+                    // test_program.registers.a = new_a;
+                    // let result = test_program.run();
+                    // println!("{}", result.iter().map(|a| a.to_string()).join(","));
 
-        // check the result
-        if result[0] == target {
-            // We found a new value of a that is compatible, update a with it
-            return Some(i);
+                    // return it
+                    return new_a;
+                }
+
+                // If not, add it to the stack
+                to_test.push((new_a, target_idx - 1));
+            }
         }
     }
 
-    unreachable!()
+    unreachable!();
 }

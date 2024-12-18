@@ -1,14 +1,14 @@
 use crate::common::{test_part_one_common, test_part_two_common};
-use crate::dayxx::DayXX;
+use crate::day07::Day07;
 
-static INPUT_EXAMPLE: &str = "";
+static INPUT_EXAMPLE: &str = include_str!("../../input_examples/day07");
 
 #[test]
 fn test_part_one() {
-    test_part_one_common(DayXX::default(), INPUT_EXAMPLE, 0);
+    test_part_one_common(Day07::default(), INPUT_EXAMPLE, 3749);
 }
 
 #[test]
 fn test_part_two() {
-    test_part_two_common(DayXX::default(), INPUT_EXAMPLE, 0);
+    test_part_two_common(Day07::default(), INPUT_EXAMPLE, 11387);
 }

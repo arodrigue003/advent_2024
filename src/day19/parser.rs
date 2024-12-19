@@ -14,5 +14,5 @@ pub fn parse_input(input: String) -> Onsen {
         }
     }
 
-    Onsen { available_towels: towels, target_designs: designs }
+    Onsen::new(towels, designs)
 }

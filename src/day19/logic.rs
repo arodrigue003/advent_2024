@@ -1,6 +1,8 @@
 use crate::day19::models::Onsen;
+use hashbrown::HashSet;
 use itertools::Itertools;
 use regex::Regex;
+use std::cmp::min;
 
 pub fn solve_part_one(onsen: &Onsen) -> usize {
     // Create a regex that can match
@@ -14,7 +16,14 @@ pub fn solve_part_one(onsen: &Onsen) -> usize {
         .count()
 }
 
-pub fn count_combinations_rec(available_towels: &[String], design: &str, cache: &mut [usize], pos: usize) -> usize {
+pub fn count_combinations_rec(
+    available_towels: &HashSet<String>,
+    design: &str,
+    min_size: usize,
+    max_size: usize,
+    cache: &mut [usize],
+    pos: usize,
+) -> usize {
     // Return the default value if we are done with the recursion
     if pos >= design.len() {
         return 1;
@@ -29,11 +38,9 @@ pub fn count_combinations_rec(available_towels: &[String], design: &str, cache: 
     let mut result = 0;
 
     // Iter over towels to see if one of them can be used
-    for towel in available_towels {
-        if pos + towel.len() <= design.len() {
-            if &design[pos..pos + towel.len()] == towel {
-                result += count_combinations_rec(available_towels, design, cache, pos + towel.len());
-            }
+    for i in min_size..=min(max_size, design.len() - pos) {
+        if available_towels.contains(&design[pos..pos + i]) {
+            result += count_combinations_rec(available_towels, design, min_size, max_size, cache, pos + i);
         }
     }
 
@@ -43,17 +50,20 @@ pub fn count_combinations_rec(available_towels: &[String], design: &str, cache: 
     result
 }
 
-pub fn count_combinations(available_towels: &[String], design: &str) -> usize {
+pub fn count_combinations(available_towels: &HashSet<String>, design: &str, min_size: usize, max_size: usize) -> usize {
     // Initialize the cache
     let mut cache = vec![usize::MAX; design.len()];
 
-    count_combinations_rec(available_towels, design, &mut cache, 0)
+    count_combinations_rec(available_towels, design, min_size, max_size, &mut cache, 0)
 }
 
 pub fn solve_part_two(onsen: &Onsen) -> usize {
+    let min_size = onsen.available_towels.iter().map(|a| a.len()).min().unwrap();
+    let max_size = onsen.available_towels.iter().map(|a| a.len()).max().unwrap();
+
     onsen
         .target_designs
         .iter()
-        .map(|design| count_combinations(&onsen.available_towels, design))
+        .map(|design| count_combinations(&onsen.available_towels_set, design, min_size, max_size))
         .sum()
 }

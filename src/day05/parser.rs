@@ -1,11 +1,12 @@
-use crate::day05::models::ManualUpdates;
 use hashbrown::{HashMap, HashSet};
 use nom::bytes::complete::tag;
 use nom::character::complete::{i32 as i32_parser, line_ending};
-use nom::combinator::{map};
+use nom::combinator::map;
 use nom::multi::{many1, separated_list1};
 use nom::sequence::tuple;
 use nom::{IResult, Parser};
+
+use crate::day05::models::ManualUpdates;
 
 type ParsedManualUpdates = (Vec<(i32, i32)>, Vec<Vec<i32>>);
 

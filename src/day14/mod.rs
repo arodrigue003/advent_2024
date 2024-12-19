@@ -6,7 +6,7 @@ mod parser;
 mod tests;
 
 use crate::day14::logic::{solve_part_one, solve_part_two};
-use crate::day14::models::{Bathroom};
+use crate::day14::models::Bathroom;
 use crate::day14::parser::parse_input;
 use crate::models::AdventSolution;
 

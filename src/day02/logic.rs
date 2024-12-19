@@ -18,15 +18,18 @@ pub fn solve_part_one(reports: &[Vec<i64>]) -> usize {
 }
 
 pub fn solve_part_two(reports: &[Vec<i64>]) -> usize {
-    reports.iter().filter(|report| {
-        if is_safe(report) {
-            true
-        } else {
-            (0..report.len()).any(|i| {
-                let mut temp_report = (*report).clone();
-                temp_report.remove(i);
-                is_safe(&temp_report)
-            })
-        }
-    }).count()
+    reports
+        .iter()
+        .filter(|report| {
+            if is_safe(report) {
+                true
+            } else {
+                (0..report.len()).any(|i| {
+                    let mut temp_report = (*report).clone();
+                    temp_report.remove(i);
+                    is_safe(&temp_report)
+                })
+            }
+        })
+        .count()
 }

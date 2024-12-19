@@ -1,7 +1,7 @@
 use nom::bytes::complete::tag;
 use nom::character::complete::{line_ending, u128 as u128_parser};
-use nom::combinator::{map};
-use nom::multi::{many1};
+use nom::combinator::map;
+use nom::multi::many1;
 use nom::sequence::tuple;
 use nom::{IResult, Parser};
 

@@ -1,5 +1,6 @@
-use crate::day14::models::{Bathroom, Robot};
 use hashbrown::{HashMap, HashSet};
+
+use crate::day14::models::{Bathroom, Robot};
 
 fn simulate_robot(robot: &Robot, width: i64, height: i64, steps: usize) -> (i64, i64) {
     let mut cur_x = robot.x;
@@ -69,7 +70,7 @@ fn check_if_might_work(bathroom: &Bathroom) -> bool {
 pub fn solve_part_two(bathroom: &Bathroom) -> usize {
     // Part two does not work for the example, return 0 for it
     if bathroom.width == 11 {
-        return 0
+        return 0;
     }
 
     let mut bathroom = bathroom.clone();

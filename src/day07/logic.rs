@@ -3,7 +3,7 @@ use crate::day07::models::Equation;
 fn can_satisfy_rec_one(equation: &Equation, position: usize, current: u128) -> bool {
     // Early return if we went to far
     if current > equation.result {
-        return false
+        return false;
     }
 
     // Check the result if we are at the end
@@ -41,7 +41,7 @@ fn concat(left: u128, right: u128) -> u128 {
 fn can_satisfy_rec_two(equation: &Equation, position: usize, current: u128) -> bool {
     // Early return if we went to far
     if current > equation.result {
-        return false
+        return false;
     }
 
     // Check the result if we are at the end

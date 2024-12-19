@@ -9,7 +9,12 @@ use crate::day07::models::Equation;
 
 fn parse_equation(input: &str) -> IResult<&str, Equation> {
     map(
-        tuple((u128_parser, tag(": "), separated_list1(tag(" "), u128_parser), opt(line_ending))),
+        tuple((
+            u128_parser,
+            tag(": "),
+            separated_list1(tag(" "), u128_parser),
+            opt(line_ending),
+        )),
         |(result, _, operands, _)| Equation { result, operands },
     )
     .parse(input)

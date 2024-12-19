@@ -113,7 +113,7 @@ impl Program {
     pub fn get_value(&self, operand: &Operand) -> u64 {
         match operand {
             Operand::Literal(literal) => *literal as u64,
-            Operand::Register(register) => self.registers.get_value(register)
+            Operand::Register(register) => self.registers.get_value(register),
         }
     }
 }

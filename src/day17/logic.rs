@@ -1,5 +1,6 @@
-use crate::day17::models::{Instruction, Operand, Program, Register};
 use itertools::Itertools;
+
+use crate::day17::models::{Instruction, Operand, Program, Register};
 
 impl Program {
     /// Run a program until it stops and return what was eventually printed
@@ -14,7 +15,7 @@ impl Program {
 
             // Execute the instruction
             match &self.parsed_instructions[self.instruction_pointer] {
-                Instruction::Adv(operand) => self.registers.a = self.registers.a >> self.get_value(operand),
+                Instruction::Adv(operand) => self.registers.a >>= self.get_value(operand),
                 Instruction::Bxl(operand) => self.registers.b ^= self.get_value(operand),
                 Instruction::Bst(operand) => self.registers.b = self.get_value(operand) % 8,
                 Instruction::Jnz(operand) => {

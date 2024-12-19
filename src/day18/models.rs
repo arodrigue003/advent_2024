@@ -13,6 +13,10 @@ impl Corruption {
             (71, 1024)
         };
 
-        Self { size, to_simulate, bytes }
+        Self {
+            size,
+            to_simulate,
+            bytes,
+        }
     }
 }

@@ -1,9 +1,10 @@
 // use colored::Colorize;
-use crate::day16::models::{Map, Tile};
 use hashbrown::HashSet;
+use petgraph::graph::Graph;
+
 // use petgraph::dot::Dot;
 use crate::day16::astar::multi_astar;
-use petgraph::graph::Graph;
+use crate::day16::models::{Map, Tile};
 
 pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
     let width = map.grid[0].len();
@@ -14,18 +15,10 @@ pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
 
     // Create graph nodes from the grid for both horizontal and vertical nodes
     let hor_nodes: Vec<Vec<_>> = (0..height)
-        .map(|line| {
-            (0..width)
-                .map(|column| graph.add_node((line, column, 'H')))
-                .collect()
-        })
+        .map(|line| (0..width).map(|column| graph.add_node((line, column, 'H'))).collect())
         .collect();
     let ver_nodes: Vec<Vec<_>> = (0..height)
-        .map(|line| {
-            (0..width)
-                .map(|column| graph.add_node((line, column, 'V')))
-                .collect()
-        })
+        .map(|line| (0..width).map(|column| graph.add_node((line, column, 'V'))).collect())
         .collect();
 
     // Create graph edges if possible
@@ -55,7 +48,6 @@ pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
     let hor_end = hor_nodes[map.end.0][map.end.1];
     let ver_end = ver_nodes[map.end.0][map.end.1];
 
-
     // Compute the shortest path and every nodes in it
     let shortest_paths = multi_astar(
         &graph,
@@ -63,7 +55,7 @@ pub fn prepare_data(map: &Map) -> (i32, HashSet<(usize, usize)>) {
         |finish| finish == hor_end || finish == ver_end,
         |e| *e.weight(),
     )
-        .unwrap();
+    .unwrap();
 
     // Display the result
     // for (i, line) in map.grid.iter().enumerate() {

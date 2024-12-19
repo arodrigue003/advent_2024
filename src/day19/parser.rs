@@ -8,7 +8,7 @@ pub fn parse_input(input: String) -> Onsen {
         if i == 0 {
             // First line
             towels = line.split(", ").map(|towel| towel.to_string()).collect();
-        } else if line != "" {
+        } else if !line.is_empty() {
             // Skip empty lines
             designs.push(line.to_string());
         }

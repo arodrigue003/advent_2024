@@ -40,7 +40,7 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     for i in 0..height {
         pattern_pos = 0;
         anti_pattern_pos = 0;
-        for j in 0..min(i+1, width) {
+        for j in 0..min(i + 1, width) {
             let item = grid[i - j][j];
             search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
             search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
@@ -51,7 +51,7 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     for i in 1..width {
         pattern_pos = 0;
         anti_pattern_pos = 0;
-        for j in 0..min(width-i, height) {
+        for j in 0..min(width - i, height) {
             let item = grid[height - j - 1][i + j];
             search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
             search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
@@ -62,7 +62,7 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     for i in 0..height {
         pattern_pos = 0;
         anti_pattern_pos = 0;
-        for j in 0..min(i+1, width) {
+        for j in 0..min(i + 1, width) {
             let item = grid[height + j - i - 1][j];
             search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
             search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
@@ -73,8 +73,8 @@ pub fn solve_part_one(grid: &[Vec<char>]) -> u32 {
     for i in 1..width {
         pattern_pos = 0;
         anti_pattern_pos = 0;
-        for j in 0..min(width-i, height) {
-            let item = grid[j][i+j];
+        for j in 0..min(width - i, height) {
+            let item = grid[j][i + j];
             search_pattern(&PATTERN, item, &mut pattern_pos, &mut count);
             search_pattern(&ANTI_PATTERN, item, &mut anti_pattern_pos, &mut count);
         }
@@ -108,31 +108,31 @@ pub fn solve_part_two(grid: &[Vec<char>]) -> u32 {
     // Count
     let mut count = 0;
 
-    for i in 1..height-1 {
-        for j in 1..width-1 {
+    for i in 1..height - 1 {
+        for j in 1..width - 1 {
             if grid[i][j] == 'A' {
                 m_count = 0;
                 s_count = 0;
-                match grid[i-1][j-1] {
+                match grid[i - 1][j - 1] {
                     'M' => m_count += 1,
                     'S' => s_count += 1,
                     _ => {}
                 }
-                match grid[i+1][j+1] {
+                match grid[i + 1][j + 1] {
                     'M' => m_count += 1,
                     'S' => s_count += 1,
                     _ => {}
                 }
                 // Prevent MAM and SAS words
-                if m_count ==2 || s_count == 2 {
-                    continue
+                if m_count == 2 || s_count == 2 {
+                    continue;
                 }
-                match grid[i-1][j+1] {
+                match grid[i - 1][j + 1] {
                     'M' => m_count += 1,
                     'S' => s_count += 1,
                     _ => {}
                 }
-                match grid[i+1][j-1] {
+                match grid[i + 1][j - 1] {
                     'M' => m_count += 1,
                     'S' => s_count += 1,
                     _ => {}

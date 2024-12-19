@@ -6,12 +6,12 @@ pub fn solve_part_one(corruption_map: &Corruption) -> usize {
 }
 
 pub fn solve_part_two(corruption_map: &Corruption) -> usize {
-    // We now that the corruption_map.to_simulate is valid, so we can use that as the start of our 
+    // We now that the corruption_map.to_simulate is valid, so we can use that as the start of our
     // dichotomy.
     let mut start = corruption_map.to_simulate;
-    
+
     // We don't have to simulate more steps than there are damaged bytes in the list
-    let mut end  = corruption_map.bytes.len();
+    let mut end = corruption_map.bytes.len();
 
     while start + 1 != end {
         // Compute the middle value

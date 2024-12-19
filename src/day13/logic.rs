@@ -1,5 +1,6 @@
-use crate::day13::models::{DiophantineSolution, Machine};
 use std::cmp::{max, min};
+
+use crate::day13::models::{DiophantineSolution, Machine};
 
 pub fn solve_part_one(machines: &[Machine]) -> i64 {
     let mut total_cost = 0;
@@ -136,11 +137,9 @@ fn solve_diophantine(a: i64, b: i64, c: i64) -> Option<DiophantineSolution> {
 
 /// THIS IS THE WORST POSSIBLE SOLUTION TO A SIMPLE PROBLEM
 pub fn solve_part_two(machines: &[Machine]) -> i64 {
-
     let mut total_cost = 0;
 
     for (i, machine) in machines.iter().enumerate() {
-
         let a0 = machine.a.0;
         let b0 = machine.b.0;
         let t0 = machine.target.0 + 10_000_000_000_000;
@@ -164,10 +163,10 @@ pub fn solve_part_two(machines: &[Machine]) -> i64 {
         };
 
         // get solutions for which the number of A press is equal for x and y
-        let res2 = if let Some(res) =solve_diophantine(res0.a0, -res1.a0, res0.x0 - res1.x0) {
+        let res2 = if let Some(res) = solve_diophantine(res0.a0, -res1.a0, res0.x0 - res1.x0) {
             res
         } else {
-            continue
+            continue;
         };
 
         let new_x0 = res0.x0 - res0.a0 * res2.x0;

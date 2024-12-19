@@ -1,9 +1,11 @@
-use crate::day18::models::Corruption;
-use hashbrown::HashSet;
 use std::cmp::Ordering;
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::{BinaryHeap, HashMap};
 use std::fmt::Debug;
+
+use hashbrown::HashSet;
+
+use crate::day18::models::Corruption;
 
 fn get_neighbors(node: (usize, usize), size: usize) -> impl Iterator<Item = (usize, usize)> {
     (0..4).filter_map(move |i| match i {
@@ -28,11 +30,11 @@ pub fn astar(corruption_map: &Corruption, to_simulate: usize) -> Option<usize> {
     let mut scores = HashMap::new(); // g-values, cost to reach the node
 
     let zero_score = 0;
-    scores.insert(start.clone(), zero_score);
-    visit_next.push(MinScored(zero_score, start.clone()));
+    scores.insert(start, zero_score);
+    visit_next.push(MinScored(zero_score, start));
 
     while let Some(MinScored(_, node)) = visit_next.pop() {
-        if &node == &target {
+        if node == target {
             return Some(scores[&node]);
         }
 
@@ -41,9 +43,9 @@ pub fn astar(corruption_map: &Corruption, to_simulate: usize) -> Option<usize> {
         let node_score = scores[&node];
 
         for next in get_neighbors(node, corruption_map.size) {
-           // Don't go here if the bit is damaged
+            // Don't go here if the bit is damaged
             if damage_map.contains(&next) {
-                continue
+                continue;
             }
 
             let next_score = node_score + 1;

@@ -1,11 +1,12 @@
-use crate::day17::models::Program;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
-use nom::character::complete::{u64 as u64_parser, line_ending, u8 as u8_parser};
+use nom::character::complete::{line_ending, u64 as u64_parser, u8 as u8_parser};
 use nom::combinator::{map, opt};
 use nom::multi::{many1, separated_list1};
 use nom::sequence::tuple;
 use nom::{IResult, Parser};
+
+use crate::day17::models::Program;
 
 fn parse_register(input: &str) -> IResult<&str, u64> {
     map(

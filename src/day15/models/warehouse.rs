@@ -1,5 +1,6 @@
 use std::fmt::{Display, Formatter};
 use std::ops::{Index, IndexMut};
+
 use crate::day15::models::coordinates::Coordinates;
 use crate::day15::models::instruction::Instruction;
 
@@ -86,7 +87,6 @@ impl Warehouse {
                     // Move the robot
                     self.robot_positions += &movement_vector;
 
-
                     // Move the line of boxes if needed
                     if boxed {
                         // Move the line of boxes
@@ -107,7 +107,7 @@ impl Warehouse {
         for (y, line) in self.grid.0.iter().enumerate() {
             for (x, tile) in line.iter().enumerate() {
                 if tile == &MapTile::Box {
-                    score += 100*y+x;
+                    score += 100 * y + x;
                 }
             }
         }

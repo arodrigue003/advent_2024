@@ -1,5 +1,5 @@
-use crate::day15::models::instruction::Instruction;
 use crate::day15::models::coordinates::Coordinates;
+use crate::day15::models::instruction::Instruction;
 use crate::day15::models::warehouse::{Grid, MapTile, Warehouse};
 
 pub fn parse_input(input: String) -> Warehouse {

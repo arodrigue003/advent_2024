@@ -1,11 +1,13 @@
-use crate::day15::models::coordinates::Coordinates;
-use crate::day15::models::instruction::Instruction;
-use crate::day15::models::warehouse::{MapTile, Warehouse};
-use hashbrown::HashSet;
 use std::collections::VecDeque;
 use std::fmt::{Display, Formatter};
 use std::ops::{Index, IndexMut};
+
+use hashbrown::HashSet;
 use once_cell::sync::Lazy;
+
+use crate::day15::models::coordinates::Coordinates;
+use crate::day15::models::instruction::Instruction;
+use crate::day15::models::warehouse::{MapTile, Warehouse};
 
 static LEFT: Lazy<Coordinates> = Lazy::new(|| Coordinates::new(-1, 0));
 static RIGHT: Lazy<Coordinates> = Lazy::new(|| Coordinates::new(1, 0));

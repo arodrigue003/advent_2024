@@ -4,7 +4,7 @@ use hashbrown::HashSet;
 pub struct Onsen {
     pub available_towels: Vec<String>,
     pub available_towels_set: HashSet<String>,
-    pub target_designs: Vec<String>
+    pub target_designs: Vec<String>,
 }
 
 impl Onsen {

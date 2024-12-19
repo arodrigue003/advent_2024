@@ -5,7 +5,7 @@ mod parser;
 #[cfg(test)]
 mod tests;
 
-use crate::day19::logic::{count_combinations};
+use crate::day19::logic::count_combinations;
 use crate::day19::models::Onsen;
 use crate::day19::parser::parse_input;
 use crate::models::AdventSolution;

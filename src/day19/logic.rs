@@ -1,6 +1,6 @@
-use hashbrown::HashSet;
 use std::cmp::min;
 
+use hashbrown::HashSet;
 
 pub fn count_combinations_rec(
     available_towels: &HashSet<String>,

@@ -1,5 +1,6 @@
-use crate::day05::models::ManualUpdates;
 use hashbrown::{HashMap, HashSet};
+
+use crate::day05::models::ManualUpdates;
 
 /// Return true if the order between two pages is valid or if it is not defined
 fn is_order_valid(left: i32, right: i32, rules: &HashMap<i32, HashSet<i32>>) -> bool {

@@ -22,5 +22,5 @@ pub fn solve_part_two(data: &(Vec<i64>, Vec<i64>)) -> i64 {
     }
 
     // Perform the computation
-    data.0.iter().map(|l| right.get(l).cloned().unwrap_or(0)*l).sum()
+    data.0.iter().map(|l| right.get(l).cloned().unwrap_or(0) * l).sum()
 }

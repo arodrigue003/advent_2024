@@ -2,20 +2,21 @@ mod logic;
 mod models;
 mod parser;
 
+mod astar;
 #[cfg(test)]
 mod tests;
-mod astar;
 
 use hashbrown::HashSet;
-use crate::day16::logic::{prepare_data};
-use crate::day16::models::{Map};
+
+use crate::day16::logic::prepare_data;
+use crate::day16::models::Map;
 use crate::day16::parser::parse_input;
 use crate::models::AdventSolution;
 
 #[derive(Default)]
 pub struct Day16 {
     parsed_data: Option<Map>,
-    prepared_data: Option<(i32, HashSet<(usize, usize)>)>
+    prepared_data: Option<(i32, HashSet<(usize, usize)>)>,
 }
 
 impl AdventSolution for Day16 {

@@ -1,11 +1,9 @@
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::{BinaryHeap, HashMap, VecDeque};
-
 use std::hash::Hash;
 
-use petgraph::visit::{EdgeRef, GraphBase, IntoEdges, Visitable};
-
 use petgraph::algo::Measure;
+use petgraph::visit::{EdgeRef, GraphBase, IntoEdges, Visitable};
 
 /// An astar implementation that track every possible path with the lowest score
 pub fn multi_astar<G, F, K, IsGoal>(
@@ -69,9 +67,10 @@ where
     None
 }
 
-use hashbrown::HashSet;
 use std::cmp::Ordering;
 use std::fmt::Debug;
+
+use hashbrown::HashSet;
 
 /// `MinScored<K, T>` holds a score `K` and a scored object `T` in
 /// a pair for use with a `BinaryHeap`.

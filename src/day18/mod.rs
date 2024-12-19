@@ -2,9 +2,9 @@ mod logic;
 mod models;
 mod parser;
 
+mod astar;
 #[cfg(test)]
 mod tests;
-mod astar;
 
 use crate::day18::logic::{solve_part_one, solve_part_two};
 use crate::day18::models::Corruption;

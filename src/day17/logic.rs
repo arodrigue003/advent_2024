@@ -132,7 +132,7 @@ pub fn solve_part_two(program: &Program) -> u64 {
     bruteforce_program.raw_instructions.pop();
     bruteforce_program.raw_instructions.pop();
 
-    // Set the first value of a
+    // Set the first value of a.
     // We do not need to set the value of B and C since their value are always set from A at each
     // run of the bruteforce program.
     to_test.push((0, program.raw_instructions.len() - 1));

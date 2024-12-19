@@ -4,14 +4,16 @@ mod parser;
 
 #[cfg(test)]
 mod tests;
+mod astar;
 
 use crate::day18::logic::{solve_part_one, solve_part_two};
+use crate::day18::models::Corruption;
 use crate::day18::parser::parse_input;
 use crate::models::AdventSolution;
 
 #[derive(Default)]
 pub struct Day18 {
-    parsed_data: Option<String>,
+    parsed_data: Option<Corruption>,
 }
 
 impl AdventSolution for Day18 {

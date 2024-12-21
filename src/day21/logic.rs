@@ -7,6 +7,8 @@ use petgraph::{Graph, Undirected};
 use std::iter::{IntoIterator, Iterator};
 // use petgraph::dot::{Dot, Config::EdgeNoLabel};
 
+type KeypadPaths = Vec<((usize, usize), Vec<Vec<usize>>)>;
+
 static A: usize = 0;
 static UP: usize = 1;
 static LEFT: usize = 2;
@@ -16,7 +18,7 @@ static RIGHT: usize = 4;
 /// Represent every possible paths from two points the keypad + a pressure of the A button.
 /// Staying at the same location is not represented here and the combined cost matrix must be
 /// initialized with unit costs
-static KEYPAD_PATHS: Lazy<Vec<((usize, usize), Vec<Vec<usize>>)>> = Lazy::new(|| {
+static KEYPAD_PATHS: Lazy<KeypadPaths> = Lazy::new(|| {
     vec![
         // A <-> Others
         (
@@ -168,7 +170,7 @@ fn solve(codes: &[String], composition_count: usize) -> i64 {
 }
 
 fn compute_code_cost(
-    code: &String,
+    code: &str,
     graph: &Graph<char, i64, Undirected>,
     nodes: &HashMap<char, NodeIndex>,
     reversed_nodes: &HashMap<NodeIndex, char>,
@@ -190,7 +192,7 @@ fn compute_code_cost(
                 .collect();
 
             // Compute the cost
-            let cost = get_cost(&double_robot_cost, &sequence);
+            let cost = get_cost(double_robot_cost, &sequence);
             if cost < min_cost {
                 min_cost = cost;
             }

@@ -142,7 +142,14 @@ pub fn solve_part_two(program: &Program) -> u64 {
     while let Some((test_a, target_idx)) = to_test.pop() {
         let target = program.raw_instructions[target_idx];
 
-        for i in (0..2u64.pow(shift as u32)).rev() {
+        // if target_idx is equal to 0, it's the last instruction, bruteforce from the beginning
+        let i_values : Vec<_> = if target_idx == 0 {
+            (0..2u64.pow(shift as u32)).collect()
+        } else {
+            (0..2u64.pow(shift as u32)).rev().collect()
+        };
+
+        for i in i_values {
             // reset the bruteforce program for this run
             bruteforce_program.instruction_pointer = 0;
 

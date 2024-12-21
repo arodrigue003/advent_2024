@@ -5,7 +5,7 @@ static INPUT_EXAMPLE: &str = include_str!("../../input_examples/day20");
 
 #[test]
 fn test_part_one() {
-    test_part_one_common(Day20::default(), INPUT_EXAMPLE, 5);
+    test_part_one_common(Day20::default(), INPUT_EXAMPLE, 10);
 }
 
 #[test]

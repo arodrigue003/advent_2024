@@ -98,7 +98,7 @@ static NUMPAD_PATH_MAPPING: Lazy<HashMap<(char, char), usize>> = Lazy::new(|| {
 });
 
 /// Start from a matrix of cost and compos it to add a robot in the process
-pub fn compose(costs: &[Vec<i32>]) -> Vec<Vec<i32>> {
+pub fn compose(costs: &[Vec<i64>]) -> Vec<Vec<i64>> {
     // Compose the matrix.
     // We init it with unit cost since X -> X cost is always 1 since every robot just have to press A.
     let mut combined_cost = vec![vec![1; 5]; 5];
@@ -118,16 +118,19 @@ pub fn compose(costs: &[Vec<i32>]) -> Vec<Vec<i32>> {
     combined_cost
 }
 
-pub fn solve_part_one(codes: &[String]) -> i32 {
+fn solve(codes: &[String], composition_count: usize) -> i64 {
     // Create a cost matrix from every point in the graph to every other points
     // This matrix indicate how many press are necessary to make the last robot make a movement
     // from the current position to the target position.
 
     // At the start every cost is 1 because the human can press every button whenever he wants
-    let costs = vec![vec![1; 5]; 5];
+    let mut costs = vec![vec![1; 5]; 5];
 
     // Here we have every cost for the double robot setup
-    let double_robot_cost = compose(&compose(&costs));
+    // Compose the costs as much as necessary
+    for _ in 0..composition_count {
+        costs = compose(&costs);
+    }
 
     // Build a graph corresponding to the numpad
     let mut graph = Graph::new_undirected();
@@ -156,8 +159,8 @@ pub fn solve_part_one(codes: &[String]) -> i32 {
     // A to the digit value
     let mut total = 0;
     for code in codes {
-        let score = compute_code_cost(code, &graph, &nodes, &reversed_nodes, &double_robot_cost);
-        let numeric: i32 = code[0..3].parse().unwrap();
+        let score = compute_code_cost(code, &graph, &nodes, &reversed_nodes, &costs);
+        let numeric: i64 = code[0..3].parse().unwrap();
         total += score * numeric;
     }
 
@@ -166,14 +169,14 @@ pub fn solve_part_one(codes: &[String]) -> i32 {
 
 fn compute_code_cost(
     code: &String,
-    graph: &Graph<char, i32, Undirected>,
+    graph: &Graph<char, i64, Undirected>,
     nodes: &HashMap<char, NodeIndex>,
     reversed_nodes: &HashMap<NodeIndex, char>,
-    double_robot_cost: &[Vec<i32>],
-) -> i32 {
+    double_robot_cost: &[Vec<i64>],
+) -> i64 {
     let mut score = 0;
     for (start, end) in std::iter::once('A').chain(code.chars()).tuple_windows() {
-        let mut min_cost = i32::MAX;
+        let mut min_cost = i64::MAX;
         for simple_path in all_simple_paths::<Vec<_>, _>(&graph, nodes[&start], nodes[&end], 0, None) {
             // Build the associated sequence
             let sequence: Vec<_> = std::iter::once(A)
@@ -197,7 +200,7 @@ fn compute_code_cost(
     score
 }
 
-fn get_cost(double_robot_cost: &[Vec<i32>], moves: &[usize]) -> i32 {
+fn get_cost(double_robot_cost: &[Vec<i64>], moves: &[usize]) -> i64 {
     moves
         .iter()
         .tuple_windows()
@@ -205,6 +208,10 @@ fn get_cost(double_robot_cost: &[Vec<i32>], moves: &[usize]) -> i32 {
         .sum()
 }
 
-pub fn solve_part_two(codes: &[String]) -> u32 {
-    0
+pub fn solve_part_one(codes: &[String]) -> i64 {
+    solve(codes, 2)
+}
+
+pub fn solve_part_two(codes: &[String]) -> i64 {
+    solve(codes, 25)
 }

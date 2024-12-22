@@ -75,11 +75,11 @@ pub fn solve_part_two(secrets: &[i64]) -> i64 {
     // Vec max offset is reached when a, b, c and d all equal 9 so 937080 (we will add 1 for the size)
 
     // Store the list of profits
-    let mut sequences_profit = vec![0; 937_080];
+    let mut sequences_profit = vec![0; 937_081];
 
     for secret in secrets {
         // Check if we already had this sequence for this secret
-        let mut sequence_already_seen = vec![false; 937_080];
+        let mut sequence_already_seen = vec![false; 937_081];
 
         for (a, b, c, d, e) in Secret::new(*secret).take(2000).tuple_windows() {
             let offset = convert_changes_to_offset(b % 10 - a % 10, c % 10 - b % 10, d % 10 - c % 10, e % 10 - d % 10);
@@ -93,5 +93,4 @@ pub fn solve_part_two(secrets: &[i64]) -> i64 {
 
     // return the highest value
     sequences_profit.into_iter().max().unwrap()
-    // res as i64
 }

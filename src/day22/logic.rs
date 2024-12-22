@@ -63,23 +63,24 @@ pub fn solve_part_one(secrets: &[i64]) -> i64 {
 
 #[inline(always)]
 fn convert_changes_to_offset(a: i64, b: i64, c: i64, d: i64) -> usize {
-    (50653 * a + 1369 * b + 37 * c + d + 468540) as usize
+    (6859*a + 361*b + 19*c + d + 65160) as usize
 }
 
 pub fn solve_part_two(secrets: &[i64]) -> i64 {
     // Since every change is computed from two values that range from 0 to 9, every change value
-    // ranges from -18 to 18.
+    // ranges from -9 to 9.
     // Knowing that, we can transform every change (a, b, c, d) into a unique offset in a big vector
-    // with the transformation (a+9)*37.pow(3) + (b+9)*37.pow(2) + (c+9)*37.pow(1) + c + 9.
-    // This is equivalent to 50653*a + 1369*b + 37*c + d + 468540
-    // Vec max offset is reached when a, b, c and d all equal 9 so 937080 (we will add 1 for the size)
+    // with the transformation (a+9)*19.pow(3) + (b+9)*19.pow(2) + (c+9)*19.pow(1) + c + 18.
+    // This is equivalent to 6859*a + 361*b + 19*c + d + 65160
+    // Vec max offset is reached when a, b, c and d all equal 9 so 130_320 (we will add 1 for the size)
 
     // Store the list of profits
-    let mut sequences_profit = vec![0; 937_081];
+    let mut sequences_profit = vec![0; 2<<17];
 
     for secret in secrets {
         // Check if we already had this sequence for this secret
-        let mut sequence_already_seen = vec![false; 937_081];
+        let mut sequence_already_seen = vec![false; 2<<17];
+
 
         for (a, b, c, d, e) in Secret::new(*secret).take(2000).tuple_windows() {
             let offset = convert_changes_to_offset(b % 10 - a % 10, c % 10 - b % 10, d % 10 - c % 10, e % 10 - d % 10);

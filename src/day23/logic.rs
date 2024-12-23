@@ -5,41 +5,10 @@ use itertools::Itertools;
 use petgraph::prelude::NodeIndex;
 use petgraph::{Graph, Undirected};
 
-fn bron_kerbosch_1(
-    graph: &Graph<String, i32, Undirected>,
-    r: HashSet<NodeIndex>,
-    mut p: HashSet<NodeIndex>,
-    mut x: HashSet<NodeIndex>,
-    max_clique: &mut HashSet<NodeIndex>,
-) {
-    if p.is_empty() && x.is_empty() {
-        if r.len() > max_clique.len() {
-            let _ = std::mem::replace(max_clique, r.clone());
-        }
-    }
-    if p.is_empty() {
-        return;
-    }
 
-    for node in p.clone() {
-        // Add the vertex to r
-        let mut r = r.clone();
-        r.insert(node);
-        // Get the neighbor set of the node
-        let neighbors: HashSet<_> = graph.neighbors(node).into_iter().collect();
-        bron_kerbosch_1(
-            graph,
-            r,
-            p.intersection(&neighbors).cloned().collect(),
-            x.intersection(&neighbors).cloned().collect(),
-            max_clique
-        );
-        p.remove(&node);
-        x.insert(node);
-    }
-}
+pub type Network = Graph<String, i32, Undirected>;
 
-pub fn solve_part_one(connection_map: &ConnectionMap) -> usize {
+pub fn prepare(connection_map: &ConnectionMap) -> Network {
     // Create a graph for representation purposes
     let mut graph = Graph::new_undirected();
 
@@ -55,6 +24,56 @@ pub fn solve_part_one(connection_map: &ConnectionMap) -> usize {
         graph.add_edge(start, end, 1);
     }
 
+    // Display the graph
+    // println!("{:?}", Dot::with_config(&graph, &[EdgeNoLabel]));
+
+    graph
+}
+
+fn bron_kerbosch_2(
+    graph: &Graph<String, i32, Undirected>,
+    r: HashSet<NodeIndex>,
+    mut p: HashSet<NodeIndex>,
+    mut x: HashSet<NodeIndex>,
+    max_clique: &mut HashSet<NodeIndex>,
+) {
+    if p.is_empty() && x.is_empty() {
+        if r.len() > max_clique.len() {
+            let _ = std::mem::replace(max_clique, r.clone());
+        }
+    }
+    if p.is_empty() {
+        return;
+    }
+
+    // Get a pivot from p
+    let pivot = *p.iter().next().unwrap();
+    let pivot_neighbors: HashSet<_> = graph.neighbors(pivot).into_iter().collect();
+
+    for node in p.clone() {
+        // Don't consider pivot neighbors for the loop
+        if pivot_neighbors.contains(&node) {
+            continue
+        }
+
+        // Add the vertex to r
+        let mut r = r.clone();
+        r.insert(node);
+        // Get the neighbor set of the node
+        let neighbors: HashSet<_> = graph.neighbors(node).into_iter().collect();
+        bron_kerbosch_2(
+            graph,
+            r,
+            p.intersection(&neighbors).cloned().collect(),
+            x.intersection(&neighbors).cloned().collect(),
+            max_clique
+        );
+        p.remove(&node);
+        x.insert(node);
+    }
+}
+
+pub fn solve_part_one(graph: &Network) -> usize {
     // Store found set
     let mut found_sets: HashSet<Vec<&String>> = HashSet::new();
 
@@ -79,8 +98,12 @@ pub fn solve_part_one(connection_map: &ConnectionMap) -> usize {
         }
     }
 
+    found_sets.len()
+}
+
+pub fn solve_part_two(graph: &Network) -> u32 {
     let mut max_clique = HashSet::new();
-    bron_kerbosch_1(
+    bron_kerbosch_2(
         &graph,
         HashSet::new(),
         graph.node_indices().into_iter().collect(),
@@ -93,12 +116,5 @@ pub fn solve_part_one(connection_map: &ConnectionMap) -> usize {
     max_clique_weight.sort();
     println!("{}", max_clique_weight.iter().join(","));
 
-    // Display the graph
-    // println!("{:?}", Dot::with_config(&graph, &[EdgeNoLabel]));
-
-    found_sets.len()
-}
-
-pub fn solve_part_two(_connection_map: &ConnectionMap) -> u32 {
     0
 }

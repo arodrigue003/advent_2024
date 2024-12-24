@@ -1,5 +1,6 @@
 use crate::day24::models::{FullGateError, Gate, Operation, System, Wire};
 use hashbrown::{HashMap, HashSet};
+use itertools::Itertools;
 use once_cell::sync::Lazy;
 use std::collections::VecDeque;
 
@@ -130,7 +131,10 @@ pub fn solve_part_two(system: &System) -> u32 {
         match is_valid {
             Ok(new_carry_wirer) => carry_wire = new_carry_wirer,
             Err((impacted_gates, errors)) => {
-                println!("===We found an error at the full adder {to_test}===");
+                // println!("===We found an error at the full adder {to_test}===");
+                // println!("{:#?}", &swapped_wires);
+                // println!("last carry: {carry_wire}");
+                // println!("{to_test}:{:#?}:{:#?}", impacted_gates, errors);
 
                 // Simple case, we have the right types of gates, the output is reached but is wrong
                 // Count the types of each gates
@@ -145,21 +149,22 @@ pub fn solve_part_two(system: &System) -> u32 {
                     }
                 }
 
-                if errors == vec![FullGateError::OutputBadTruthTable, FullGateError::NoValidCarry]
+                if (errors == vec![FullGateError::OutputBadTruthTable, FullGateError::NoValidCarry]
+                    || errors == vec![FullGateError::OutputBadTruthTable])
                     && xor == 2
                     && and == 2
                     && or == 1
                 {
                     carry_wire = fix_case_one(to_test, &carry_wire, &impacted_gates, &mut swapped_wires);
                 } else {
-                    println!("{:#?}", &swapped_wires);
-                    println!("{carry_wire}");
-                    println!("{to_test}:{:#?}:{:#?}", impacted_gates, errors);
                     unimplemented!()
                 }
             }
         }
     }
+
+    swapped_wires.sort();
+    println!("{}", swapped_wires.iter().join(","));
 
     0
 }
@@ -245,13 +250,12 @@ fn fix_case_one(
         .next()
         .unwrap();
 
-    // Now we search for the valid first xor gate. It is the gate that output one
-    // of the correct_carry_xor_gate input
+    // Now we search for the valid first xor gate. It is the gate that use x and y.
     let (input_xor_gate, correct_input_xor_gate) = impacted_gates
         .iter()
         .filter(|gate| {
             gate.operation == Operation::Xor
-                && (gate.result == correct_carry_xor_gate.left || gate.result == correct_carry_xor_gate.right)
+                && (gate.left == x_wire || gate.left == y_wire)
         })
         .map(|gate| {
             (
@@ -420,11 +424,15 @@ fn check_full_adder<'a>(
             }
         }
     }
-    if let Some(new_carry_wire) = new_carry_wire {
-        Ok(new_carry_wire)
-    } else {
-        errors.push(FullGateError::NoValidCarry);
 
+    if new_carry_wire.is_none() {
+        errors.push(FullGateError::NoValidCarry);
+    }
+
+    // If the error vector is empty, we know that new_carry_wire is defined and no error occured
+    if errors.is_empty() {
+        Ok(new_carry_wire.unwrap())
+    } else {
         // Get every impacted logic gate from this adder
         let mut impacted_gates = HashSet::new();
         for (wire, gates) in wire_destinations {
@@ -440,6 +448,7 @@ fn check_full_adder<'a>(
                 }
             }
         }
+
         Err((impacted_gates, errors))
     }
 }

@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Hash, Debug, Copy, Clone, Eq, PartialEq)]
 pub enum Operation {
     And,
     Xor,
@@ -38,7 +38,7 @@ impl Operation {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Hash, Debug, Clone, Eq, PartialEq)]
 pub struct Gate {
     pub left: String,
     pub operation: Operation,
@@ -53,7 +53,6 @@ impl Display for Gate {
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
-
 pub struct Wire {
     pub name: String,
     pub value: bool,
@@ -83,4 +82,13 @@ impl Display for System {
         }
         Ok(())
     }
+}
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub enum FullGateError {
+    WrongOutput(Option<String>),
+    MultiplePossibleResult,
+    OutputBadTruthTable,
+    MultiplePossibleCarry,
+    NoValidCarry
 }

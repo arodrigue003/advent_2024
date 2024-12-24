@@ -5,7 +5,7 @@ use nom::character::complete::{alphanumeric1, digit1, line_ending};
 use nom::combinator::{map, opt};
 use nom::multi::many1;
 use nom::sequence::tuple;
-use nom::{error, IResult, Parser};
+use nom::{IResult, Parser};
 
 fn parse_wire(input: &str) -> IResult<&str, Wire> {
     map(

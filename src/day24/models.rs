@@ -28,6 +28,16 @@ impl Display for Operation {
     }
 }
 
+impl Operation {
+    pub fn execute(&self, left: bool, right: bool) -> bool {
+        match self {
+            Operation::And => left && right,
+            Operation::Xor => left ^ right,
+            Operation::Or => left || right,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Gate {
     pub left: String,

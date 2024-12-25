@@ -178,7 +178,7 @@ fn main() {
                     Cell::new(day_time),
                 ]);
             }
-            println!("Advent of code 2023 solutions (every time is displayed in microseconds):");
+            println!("Advent of code 2024 solutions (every time is displayed in microseconds):");
             println!("{table}");
             println!("Total execution time (excluding file loading time): {total_time} microseconds");
         }

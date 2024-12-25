@@ -11,7 +11,7 @@ use crate::models::AdventSolution;
 
 #[derive(Default)]
 pub struct Day22 {
-    parsed_data: Option<Vec<i64>>,
+    parsed_data: Option<Vec<u64>>,
 }
 
 impl AdventSolution for Day22 {

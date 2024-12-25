@@ -1,47 +1,49 @@
 use itertools::Itertools;
 
 /// Mix two values
-fn mix(left: i64, right: i64) -> i64 {
+#[inline(always)]
+fn mix(left: u64, right: u64) -> u64 {
     left ^ right
 }
 
 /// Prune a value
-fn prune(value: i64) -> i64 {
+#[inline(always)]
+fn prune(value: u64) -> u64 {
     value % 16_777_216
 }
 
-fn next_secret(mut secret: i64) -> i64 {
+fn next_secret(mut secret: u64) -> u64 {
     // Calculate the result of multiplying the secret number by 64.
     // Then, mix this result into the secret number. Finally, prune the secret number
-    secret = prune(mix(secret, secret * 64));
+    secret = prune(mix(secret, secret << 6));
 
     // Calculate the result of dividing the secret number by 32.
     // Round the result down to the nearest integer.
     // Then, mix this result into the secret number.
     // Finally, prune the secret number.
-    secret = prune(mix(secret, secret / 32));
+    secret = prune(mix(secret, secret >> 5));
 
     // Calculate the result of multiplying the secret number by 2048.
     // Then, mix this result into the secret number.
     // Finally, prune the secret number.
-    secret = prune(mix(secret, secret * 2048));
+    secret = prune(mix(secret, secret << 11));
 
     secret
 }
 
 pub struct Secret {
     is_first: bool,
-    secret: i64,
+    secret: u64,
 }
 
 impl Secret {
-    pub fn new(secret: i64) -> Self {
+    pub fn new(secret: u64) -> Self {
         Self { is_first: true, secret }
     }
 }
 
 impl Iterator for Secret {
-    type Item = i64;
+    type Item = u64;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.is_first {
@@ -54,7 +56,7 @@ impl Iterator for Secret {
     }
 }
 
-pub fn solve_part_one(secrets: &[i64]) -> i64 {
+pub fn solve_part_one(secrets: &[u64]) -> u64 {
     secrets
         .iter()
         .map(|secret| Secret::new(*secret).skip(2000).next().unwrap())
@@ -62,11 +64,11 @@ pub fn solve_part_one(secrets: &[i64]) -> i64 {
 }
 
 #[inline(always)]
-fn convert_changes_to_offset(a: i64, b: i64, c: i64, d: i64) -> usize {
-    (6859*a + 361*b + 19*c + d + 65160) as usize
+fn convert_changes_to_offset(a: u64, b: u64, c: u64, d: u64) -> usize {
+    (6859 * a + 361 * b + 19 * c + d + 65160) as usize
 }
 
-pub fn solve_part_two(secrets: &[i64]) -> i64 {
+pub fn solve_part_two(secrets: &[u64]) -> u64 {
     // Since every change is computed from two values that range from 0 to 9, every change value
     // ranges from -9 to 9.
     // Knowing that, we can transform every change (a, b, c, d) into a unique offset in a big vector
@@ -75,23 +77,18 @@ pub fn solve_part_two(secrets: &[i64]) -> i64 {
     // Vec max offset is reached when a, b, c and d all equal 9 so 130_320 (we will add 1 for the size)
 
     // Store the list of profits
-    let mut sequences_profit = vec![0; 2<<17];
+    let mut sequences_profit: Vec<(usize, u64)> = vec![(0, 0); 2 << 17];
 
-    for secret in secrets {
-        // Check if we already had this sequence for this secret
-        let mut sequence_already_seen = vec![false; 2<<17];
-
-
+    for (i, secret) in secrets.iter().enumerate() {
         for (a, b, c, d, e) in Secret::new(*secret).take(2000).tuple_windows() {
             let offset = convert_changes_to_offset(b % 10 - a % 10, c % 10 - b % 10, d % 10 - c % 10, e % 10 - d % 10);
             // If we didn't see the sequence already
-            if sequence_already_seen[offset] == false {
-                sequence_already_seen[offset] = true;
-                sequences_profit[offset] += e % 10;
+            if sequences_profit[offset].0 < i + 1 {
+                sequences_profit[offset] = (i + 1, sequences_profit[offset].1 + (e % 10));
             }
         }
     }
 
     // return the highest value
-    sequences_profit.into_iter().max().unwrap()
+    sequences_profit.into_iter().map(|(_, v)| v).max().unwrap()
 }

@@ -1,5 +1,4 @@
 use itertools::Itertools;
-
 use crate::day17::models::{Instruction, Operand, Program, Register};
 
 impl Program {
@@ -169,6 +168,11 @@ pub fn solve_part_two(program: &Program) -> u64 {
             // check the result
             if result[0] == target {
                 // We found a new value of a that is compatible, Add it to the stack
+
+                // i cannot be null if a is null
+                if test_a == 0 && i == 0 {
+                    continue
+                }
 
                 // Compute the new value of a
                 let mut new_a = (test_a << shift) + i;
